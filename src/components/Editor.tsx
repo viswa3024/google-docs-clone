@@ -10,6 +10,7 @@ import TableHeader from '@tiptap/extension-table-header'
 import TableRow from '@tiptap/extension-table-row'
 import Image from '@tiptap/extension-image'
 import Dropcursor from '@tiptap/extension-dropcursor'
+import Underline from '@tiptap/extension-underline'
 import ImageResize from 'tiptap-extension-resize-image';
 
 import { useEditorStore } from '@/store/use-editor-store';
@@ -52,6 +53,7 @@ export default function Editor() {
         immediatelyRender: false,
         extensions: [
             StarterKit,
+            Underline,
             //Image,
             Image.configure({
                 inline: true,
