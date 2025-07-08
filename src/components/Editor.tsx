@@ -22,6 +22,7 @@ import ImageResize from 'tiptap-extension-resize-image';
 
 import { useEditorStore } from '@/store/use-editor-store';
 import { FontSizeExtension } from '@/extensions/font-size';
+import { LineHeightExtension } from '@/extensions/line-height';
 
 export default function Editor() {
 
@@ -62,6 +63,10 @@ export default function Editor() {
         extensions: [
             StarterKit,
             FontSizeExtension,
+            LineHeightExtension.configure({
+                types: ['heading', 'paragraph'],
+                defaultLineHeight: 'normal',
+            }),
             TextAlign.configure({
                 types: ['heading', 'paragraph'],
             }),
