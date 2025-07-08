@@ -16,6 +16,7 @@ import TextStyle from '@tiptap/extension-text-style'
 import { Color } from '@tiptap/extension-color'
 import Highlight from '@tiptap/extension-highlight'
 import Link from '@tiptap/extension-link'
+import TextAlign from '@tiptap/extension-text-align'
 
 import ImageResize from 'tiptap-extension-resize-image';
 
@@ -59,6 +60,9 @@ export default function Editor() {
         immediatelyRender: false,
         extensions: [
             StarterKit,
+            TextAlign.configure({
+                types: ['heading', 'paragraph'],
+            }),
             Color,
             Highlight.configure({ multicolor: true }),
             TextStyle, 
