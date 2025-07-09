@@ -19,10 +19,22 @@ import Link from '@tiptap/extension-link'
 import TextAlign from '@tiptap/extension-text-align'
 
 import ImageResize from 'tiptap-extension-resize-image';
+import { Markdown } from 'tiptap-markdown';
 
 import { useEditorStore } from '@/store/use-editor-store';
 import { FontSizeExtension } from '@/extensions/font-size';
 import { LineHeightExtension } from '@/extensions/line-height';
+import { ImportExportDocx } from '../extensions/import-export-text';
+
+// Extend the Tiptap command interface to include importDocx and exportDocx
+declare module '@tiptap/core' {
+  interface Commands<ReturnType> {
+    importExportDocx: {
+      importDocx: (file: File) => ReturnType,
+      exportDocx: () => ReturnType,
+    }
+  }
+}
 //import { Page, setupAutoPageBreak } from "@/extensions/page";
 
 //import { Pagination } from 'tiptap-pagination-breaks';
@@ -30,9 +42,12 @@ import { LineHeightExtension } from '@/extensions/line-height';
 import { Ruler } from './ruler';
 //import { useEffect } from 'react';
 
+import { useRef } from 'react';
+
 export default function Editor() {
 
     const { setEditor } = useEditorStore();
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const editor = useEditor({
         onCreate({ editor }) {
@@ -69,7 +84,18 @@ export default function Editor() {
         immediatelyRender: false,
         extensions: [
             StarterKit,
+            Markdown.configure({
+                html: true,                  // Allow HTML input/output
+                tightLists: true,            // No <p> inside <li> in markdown output
+                tightListClass: 'tight',     // Add class to <ul> allowing you to remove <p> margins when tight
+                bulletListMarker: '-',       // <li> prefix in markdown output
+                linkify: false,              // Create links from "https://..." text
+                breaks: false,               // New lines (\n) in markdown input are converted to <br>
+                transformPastedText: false,  // Allow to paste markdown text in the editor
+                transformCopiedText: false,  // Copied text is transformed to markdown
+                }),
             //Pagination,
+            ImportExportDocx,
             FontSizeExtension,
             LineHeightExtension.configure({
                 types: ['heading', 'paragraph'],
@@ -168,26 +194,26 @@ export default function Editor() {
 
             }),
         ],
-        content: '<div data-type="page"><p>Hello World</p></div>',
-        // content: `<div><p>Hello World! 🌎️</p>
-        //             <table>
-        //                 <tbody>
-        //                     <tr>
-        //                     <th>Name</th>
-        //                     <th colspan="3">Description</th>
-        //                     </tr>
-        //                     <tr>
-        //                     <td>Cyndi Lauper</td>
-        //                     <td>Singer</td>
-        //                     <td>Songwriter</td>
-        //                     <td>Actress</td>
-        //                     </tr>
-        //                 </tbody>
-        //             </table>
-        //             <p>This is a basic example of implementing images. Drag to re-order.</p>
-        //             <img src="https://placehold.co/800x400" />
-        //             <img src="https://placehold.co/800x400/6A00F5/white" />
-        //         </div>`,
+        // content: '<div><p>Hello World</p></div>',
+        content: `<div><p>Hello World! 🌎️</p>
+                    <table>
+                        <tbody>
+                            <tr>
+                            <th>Name</th>
+                            <th colspan="3">Description</th>
+                            </tr>
+                            <tr>
+                            <td>Cyndi Lauper</td>
+                            <td>Singer</td>
+                            <td>Songwriter</td>
+                            <td>Actress</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>This is a basic example of implementing images. Drag to re-order.</p>
+                    <img src="https://placehold.co/800x400" />
+                    <img src="https://placehold.co/800x400/6A00F5/white" />
+                </div>`,
     })
 
 //     useEffect(() => {
@@ -199,6 +225,31 @@ export default function Editor() {
   return (<>
    <div className="size-full overflow-x-auto bg-[#F9FBFD] px-4 print:p-0 print:bg-white print:overflow-visible">
     <Ruler />
+
+    {/* <>
+  <input
+    type="file"
+    accept=".docx"
+    style={{ display: 'none' }}
+    ref={fileInputRef}
+    onChange={async (e) => {
+      const file = e.target.files?.[0];
+      if (file && editor) {
+        await editor.commands.importDocx(file);
+      }
+    }}
+  />
+  <button onClick={() => fileInputRef.current?.click()}>
+    Import DOCX
+  </button>
+  <button onClick={async () => {
+    if (editor) {
+      await editor.commands.exportDocx();
+    }
+  }}>
+    Export DOCX
+  </button>
+</> */}
     <div className="min-w-max flex justify-center w-[816px] py-4 print:py-0 mx-auto print:w-full print:min-w-0">
         <EditorContent editor={editor} />
     </div>
