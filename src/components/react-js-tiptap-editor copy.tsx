@@ -292,8 +292,6 @@ function debounce(func: any, wait: number) {
 export default function ReactJsTipTapEditor() {
 
   const [content, setContent] = useState(DEFAULT)
-  const [isLoading, setIsLoading] = useState(false);
-  const [isEditorVisible, setIsEditorVisible] = useState(false);
   const [theme, setTheme] = useState('light')
   const [disable, setDisable] = useState(false)
 
@@ -304,56 +302,32 @@ export default function ReactJsTipTapEditor() {
     [],
   )
 
-//  const loadDocx = async () => {
-//     const res = await fetch('/api/docx');
-//     const blob = await res.blob();
-//     const arrayBuffer = await blob.arrayBuffer();
+ const loadDocx = async () => {
+    const res = await fetch('/api/docx');
+    const blob = await res.blob();
+    const arrayBuffer = await blob.arrayBuffer();
 
-//     const { value: html } = await mammoth.convertToHtml({ arrayBuffer });
+    const { value: html } = await mammoth.convertToHtml({ arrayBuffer });
 
-//     const wrapped = `<div>${html}</div>`;
+    const wrapped = `<div>${html}</div>`;
 
-//     setContent(wrapped); // ✅ Injects content into controlled editor
-//   };
-
-
-const loadDocx = async () => {
-    setIsLoading(true);
-
-    try {
-      const res = await fetch('/api/docx');
-      const blob = await res.blob();
-      const arrayBuffer = await blob.arrayBuffer();
-      const { value: html } = await mammoth.convertToHtml({ arrayBuffer });
-
-      setContent(`<div>${html}</div>`);
-      setIsEditorVisible(true);
-    } catch (err) {
-      console.error('❌ Failed to load DOCX:', err);
-    } finally {
-      setIsLoading(false);
-    }
+    setContent(wrapped); // ✅ Injects content into controlled editor
   };
-  
-  return (<>
-  
-  <div className="p-6 max-w-4xl mx-auto">
 
-      <button onClick={loadDocx} className="mb-4 px-4 py-2 bg-blue-600 text-white rounded">
+  
+  return (
+    <div
+      className="p-[24px] flex flex-col w-full max-w-screen-lg gap-[24px] mx-[auto] my-0"
+      style={{
+        maxWidth: 1024,
+        margin: '20px auto',
+      }}
+    >
+
+      {/* <button onClick={loadDocx} className="mb-4 px-4 py-2 bg-blue-600 text-white rounded">
         Load Remote DOCX
-      </button>
+      </button> */}
 
-
-      {isLoading && <p>Loading...</p>}
-
-     {isEditorVisible && !isLoading && ( 
-      <div
-        className="p-[24px] flex flex-col w-full max-w-screen-lg gap-[24px] mx-[auto] my-0"
-        style={{
-          maxWidth: 1024,
-          margin: '20px auto',
-        }}
-     > 
       <div
         style={{
           display: 'flex',
@@ -422,9 +396,7 @@ const loadDocx = async () => {
 
       {/*<h2 className="mt-6 font-semibold">Output:</h2>
       <pre className="p-2 bg-gray-100 mt-2 overflow-x-auto">{content}</pre>*/}
-    </div>)}
-
     </div>
     
-  </>);
+  );
 }
