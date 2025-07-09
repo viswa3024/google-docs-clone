@@ -3,6 +3,7 @@
 import React, { useCallback, useRef, useState } from 'react';
 import RichTextEditor, { BaseKit } from 'reactjs-tiptap-editor';
 import * as mammoth from 'mammoth';
+import { renderAsync } from 'docx-preview'
 
 import { locale } from 'reactjs-tiptap-editor/locale-bundle'
 import {
@@ -296,6 +297,8 @@ export default function ReactJsTipTapEditor() {
   const [isEditorVisible, setIsEditorVisible] = useState(false);
   const [theme, setTheme] = useState('light')
   const [disable, setDisable] = useState(false)
+  const [error, setError] = useState('');
+  const viewerRef = useRef<HTMLDivElement>(null);
 
   const onValueChange = useCallback(
     debounce((value: any) => {
@@ -317,7 +320,7 @@ export default function ReactJsTipTapEditor() {
 //   };
 
 
-const loadDocx = async () => {
+const loadDocxMammoth = async () => {
     setIsLoading(true);
 
     try {
@@ -334,6 +337,55 @@ const loadDocx = async () => {
       setIsLoading(false);
     }
   };
+
+  const loadDocx = async () => {
+    setIsLoading(true);
+    setError('');
+    try {
+      const res = await fetch('/api/docx');
+      if (!res.ok) throw new Error('DOCX fetch failed');
+
+      const blob = await res.blob();
+      const arrayBuffer = await blob.arrayBuffer();
+
+       if (!viewerRef.current) {
+        setError('Viewer container not ready');
+        return;
+      }
+
+      // Clear previous content
+      viewerRef.current.innerHTML = '';
+
+      // Render DOCX into hidden container
+      await renderAsync(arrayBuffer, viewerRef.current).catch(() => {
+        setError('An error occurred rendering the document');
+      });
+
+      const html = viewerRef.current.innerHTML;
+
+      const fullHTML = `
+      <html>
+        <head>
+          <title>Imported DOCX</title>
+        </head>
+        <body>
+          ${html}
+        </body>
+      </html>
+    `;
+
+      // console.log("html: ", html)
+      // console.log("wrapped: ", fullHTML)
+
+      // Set into Tiptap editor
+      setContent(fullHTML);
+      setIsEditorVisible(true);
+    } catch (err) {
+      console.error('❌ DOCX render failed:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
   
   return (<>
   
@@ -345,6 +397,7 @@ const loadDocx = async () => {
 
 
       {isLoading && <p>Loading...</p>}
+      {error && <p className="text-red-500">{error}</p>}
 
      {isEditorVisible && !isLoading && ( 
       <div
@@ -424,6 +477,7 @@ const loadDocx = async () => {
       <pre className="p-2 bg-gray-100 mt-2 overflow-x-auto">{content}</pre>*/}
     </div>)}
 
+        <div ref={viewerRef} style={{ display: 'none' }} />
     </div>
     
   </>);

@@ -8,7 +8,7 @@ export async function GET() {
   try {
     const response = await fetch(remoteUrl);
 
-    console.log('response ---', response);
+    //console.log('response ---', response);
 
     if (!response.ok) {
       return NextResponse.json({ error: 'Failed to fetch .docx' }, { status: 500 });
