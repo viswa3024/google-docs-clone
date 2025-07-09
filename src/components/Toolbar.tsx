@@ -28,12 +28,15 @@ import {
     MessageSquarePlusIcon, 
     MinusIcon, 
     PlusIcon, 
+    PlusSquareIcon, 
     PrinterIcon, 
     Redo2Icon, 
     RemoveFormattingIcon, 
     SearchIcon, 
     SpellCheckIcon, 
     StrikethroughIcon, 
+    TableIcon, 
+    TrashIcon, 
     UnderlineIcon, 
     Undo2Icon, 
     UploadIcon
@@ -737,6 +740,56 @@ export default function Toolbar() {
             },
 
         ],
+        [
+            {
+                label: "Insert Table",
+                icon: TableIcon,
+                isActive: false,
+                onClick: () => {
+                editor?.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
+                },
+            },
+            {
+                label: "Add Column",
+                icon: PlusIcon,
+                isActive: false,
+                onClick: () => {
+                editor?.chain().focus().addColumnAfter().run();
+                },
+            },
+            {
+                label: "Add Row",
+                icon: PlusSquareIcon,
+                isActive: false,
+                onClick: () => {
+                editor?.chain().focus().addRowAfter().run();
+                },
+            },
+            {
+                label: "Delete Row",
+                icon: MinusIcon,
+                isActive: false,
+                onClick: () => {
+                editor?.chain().focus().deleteRow().run();
+                },
+            },
+            {
+                label: "Delete Column",
+                icon: MinusIcon,
+                isActive: false,
+                onClick: () => {
+                editor?.chain().focus().deleteColumn().run();
+                },
+            },
+            {
+                label: "Delete Table",
+                icon: TrashIcon,
+                isActive: false,
+                onClick: () => {
+                editor?.chain().focus().deleteTable().run();
+                },
+            },
+        ]
     ];
   return (<>
    <div className="bg-[#F1F4F9] px-2.5 py-0.5 rounded-[24px] min-h-[40px] flex items-center gap-x-0.5 overflow-x-auto print:hidden">
@@ -765,6 +818,10 @@ export default function Toolbar() {
     <LineHeightButton />
     <ListButton />
     {sections[2].map((item) => (
+        <ToolbarButton key={item.label} {...item}/>
+    ))}
+    <Separator orientation="vertical" className="h-6 bg-neutral-300" />
+    {sections[3].map((item) => (
         <ToolbarButton key={item.label} {...item}/>
     ))}
    </div>
