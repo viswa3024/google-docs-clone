@@ -76,7 +76,7 @@ export const Navbar = () => {
   try {
     const blob = await asBlob(fullHtml)
     //ts-ignore
-    saveAs(blob, 'document.docx')
+    //saveAs(blob, 'document.docx')
   } catch (error) {
     console.error('Failed to export DOCX:', error)
   }
