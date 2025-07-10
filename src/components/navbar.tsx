@@ -171,10 +171,10 @@ export const Navbar = () => {
                                             <FileTextIcon className="size-4 mr-2" />
                                             Text
                                         </MenubarItem>
-                                        <MenubarItem className="cursor-pointer" onClick={exportEditorContentToDocx}>
+                                        {/* <MenubarItem className="cursor-pointer" onClick={exportEditorContentToDocx}>
                                             <FaFileWord className="size-4 mr-2" />
                                             DOCX
-                                        </MenubarItem>
+                                        </MenubarItem> */}
                                         <MenubarItem className="cursor-pointer" onClick={onSaveMarkdown}>
                                             <FaMarkdown className="size-4 mr-2" />
                                             Markdown
