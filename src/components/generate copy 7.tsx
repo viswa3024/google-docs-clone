@@ -31,7 +31,6 @@ export default function GeneratePage() {
   const [documentType, setDocumentType] = useState('migration-guide');
 
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
 
   const handleGenerate = () => {
     setDocumentGenerated(true);
@@ -52,33 +51,17 @@ export default function GeneratePage() {
 //     }
 //   };
 
-// const handleDownload = async () => {
-//     try {
-//       const res = await fetch('/api/docx');
-//       if (!res.ok) {
-//         throw new Error('Failed to download file');
-//       }
-//       const blob = await res.blob();
-//       saveAs(blob, 'demo.docx');
-//     } catch (error) {
-//       console.error('Download error:', error);
-//       alert('Download failed');
-//     }
-//   };
-
 const handleDownload = async () => {
     try {
-      setLoading(true);
       const res = await fetch('/api/docx');
-      if (!res.ok) throw new Error('Failed to download file');
-
+      if (!res.ok) {
+        throw new Error('Failed to download file');
+      }
       const blob = await res.blob();
       saveAs(blob, 'demo.docx');
     } catch (error) {
       console.error('Download error:', error);
       alert('Download failed');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -165,41 +148,10 @@ const handleDownload = async () => {
                 </div>
               </div>
 
-              {/* <button className="mt-4 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded flex items-center gap-2"
+              <button className="mt-4 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded flex items-center gap-2"
                 onClick={handleDownload}>
                 <Download size={18} /> Download Document
-              </button> */}
-
-              <button
-      onClick={handleDownload}
-      disabled={loading}
-      className={`px-4 py-2 flex items-center gap-2 rounded text-white transition
-        ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
-    >
-      {loading && (
-        <svg
-          className="animate-spin h-5 w-5 text-white"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-          ></circle>
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-          ></path>
-        </svg>
-      )}
-      {loading ? 'Downloading...' : 'Download .docx'}
-    </button>
+              </button>
             </div>
           ) : (
             <p className="text-gray-400 italic">No document generated yet.</p>

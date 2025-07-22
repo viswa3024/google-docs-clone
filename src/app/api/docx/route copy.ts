@@ -1,4 +1,5 @@
 // src/app/api/docx/route.ts
+
 import { NextResponse } from 'next/server';
 
 export async function GET() {
@@ -6,6 +7,8 @@ export async function GET() {
 
   try {
     const response = await fetch(remoteUrl);
+
+    //console.log('response ---', response);
 
     if (!response.ok) {
       return NextResponse.json({ error: 'Failed to fetch .docx' }, { status: 500 });
@@ -18,7 +21,7 @@ export async function GET() {
       status: 200,
       headers: {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'Content-Disposition': 'attachment; filename="demo.docx"',
+        'Content-Disposition': 'inline; filename="demo.docx"',
         'Access-Control-Allow-Origin': '*',
       },
     });
